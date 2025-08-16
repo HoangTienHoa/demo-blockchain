@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Blockchain Explorer</title>
+    <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+<h1>🔗 Mini Blockchain Viewer</h1>
+
+<!-- Tạo block mới -->
+<div class="form-section">
+    <h2>🧾 Tạo Block mới</h2>
+    <form id="blockForm">
+        <input type="text" id="from" placeholder="From" required>
+        <input type="text" id="to" placeholder="To" required>
+        <input type="number" id="amount" placeholder="Amount" required>
+        <button type="submit">➕ Tạo Block</button>
+    </form>
+</div>
+
+<!-- Nút kiểm tra và tải lại -->
+<div class="action-section">
+    <button onclick="loadChain()">🔄 Làm mới Blockchain</button>
+    <button onclick="validateChain()">🧪 Kiểm tra tính hợp lệ</button>
+    <p id="validation-result"></p>
+</div>
+
+<!-- Hiển thị blockchain -->
+<div id="chain"></div>
+
+<script>
+    async function loadChain() {
+        const res = await fetch('/chain');
+        const data = await res.json();
+        const container = document.getElementById('chain');
+        container.innerHTML = '';
+
+        data.forEach((block, index) => {
+            const card = document.createElement('div');
+            card.className = 'block-card';
+            if (index === 0) card.classList.add('genesis');
+
+            card.innerHTML = `
+          <h3>🧱 Block #${index}</h3>
+          <p><strong>⏱️ Timestamp:</strong> ${block.timestamp}</p>
+          <p><strong>🔗 Prev Hash:</strong> ${block.previousHash}</p>
+          <p><strong>🔐 Hash:</strong> ${block.hash}</p>
+          <p><strong>📦 Data:</strong> <pre>${JSON.stringify(block.data, null, 2)}</pre></p>
+        `;
+            container.appendChild(card);
+        });
+    }
+
+    async function validateChain() {
+        const res = await fetch('/validate');
+        const data = await res.json();
+        const resultEl = document.getElementById('validation-result');
+        resultEl.textContent = data.valid
+            ? '✅ Blockchain hợp lệ'
+            : '❌ Blockchain KHÔNG hợp lệ!';
+        resultEl.style.color = data.valid ? 'green' : 'red';
+    }
+
+    document.getElementById('blockForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const from = document.getElementById('from').value;
+        const to = document.getElementById('to').value;
+        const amount = parseFloat(document.getElementById('amount').value);
+
+        await fetch('/mine', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ data: { from, to, amount } }),
+        });
+
+        // Reset form và reload
+        e.target.reset();
+        loadChain();
+    });
+
+    loadChain();
+
+    async function validateChain() {
+        const res = await fetch('/validate');
+        const data = await res.json();
+        const resultEl = document.getElementById('validation-result');
+
+        if (data.valid) {
+            resultEl.textContent = '✅ Blockchain hợp lệ!';
+            resultEl.style.color = 'green';
+        } else {
+            resultEl.textContent = '❌ Blockchain KHÔNG hợp lệ!';
+            resultEl.style.color = 'red';
+        }
+    }
+
+</script>
+</body>
+</html>

@@ -1,0 +1,27 @@
+{
+  "name": "demo-blockchain",
+  "version": "1.0.0",
+  "description": "Demo for  Block Chain App",
+  "main": "blockchain.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://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@github.com/HoangTienHoa/demo-blockchain.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/HoangTienHoa/demo-blockchain/issues"
+  },
+  "homepage": "https://github.com/HoangTienHoa/demo-blockchain#readme",
+  "dependencies": {
+    "crypto": "^1.0.1",
+    "express": "^5.1.0",
+    "mongoose": "^8.17.1",
+    "path": "^0.12.7"
+  }
+}
